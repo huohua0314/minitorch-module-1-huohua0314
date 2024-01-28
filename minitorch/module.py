@@ -62,7 +62,6 @@ class Module:
             a = b.named_parameters()
             for x1, x2 in a:
                 ret.append((f"{z}.{x1}", x2))
-        print(ret)
         return ret
         # raise NotImplementedError("Need to implement for Task 0.4")
 

@@ -183,8 +183,13 @@ class Scalar:
         assert h.last_fn is not None
         assert h.ctx is not None
 
+        ret = []
+
         for x, y in zip(h.last_fn._backward(h.ctx, d_output),self.parents):
-            yield y,x
+        
+            ret.append((y,x))
+
+        return ret
             
 
         # TODO: Implement for Task 1.3.

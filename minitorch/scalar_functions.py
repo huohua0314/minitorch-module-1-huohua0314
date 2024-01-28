@@ -7,6 +7,8 @@ import minitorch
 from . import operators
 from .autodiff import Context
 
+from .autodiff import central_difference ## TODO: does it needs?
+
 if TYPE_CHECKING:
     from typing import Tuple
 
@@ -105,13 +107,16 @@ class Mul(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward([a,b])
+        ctx.save_for_backward(a,b)
         return operators.mul(a, b)
         raise NotImplementedError("Need to implement for Task 1.2")
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
         # TODO: Implement for Task 1.4.
+        saved = ctx.saved_tensors
+        print(saved)
+        return  (saved[1] * d_output , saved[0] * d_output)
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -128,6 +133,7 @@ class Inv(ScalarFunction):
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
+        return operators.inv_back(*ctx.saved_tensors, d_output)
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -137,13 +143,13 @@ class Neg(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward(a)
         return operators.neg(a) 
         raise NotImplementedError("Need to implement for Task 1.2")
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
+        return -1 * d_output
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -153,13 +159,15 @@ class Sigmoid(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward(a)
+        ctx.save_for_backward(operators.sigmoid(a))
         return operators.sigmoid(a)
         raise NotImplementedError("Need to implement for Task 1.2")
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
+        fx = ctx.saved_tensors[0]
+        return d_output * fx * (1 - fx)
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -176,6 +184,7 @@ class ReLU(ScalarFunction):
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
+        return  operators.relu_back(*ctx.saved_tensors, d_output)
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -192,6 +201,7 @@ class Exp(ScalarFunction):
     @staticmethod
     def backward(ctx: Context, d_output: float) -> float:
         # TODO: Implement for Task 1.4.
+        return d_output * operators.exp(*ctx.saved_tensors)
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -201,13 +211,15 @@ class LT(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward([a,b])
+        ctx.save_for_backward(a,b)
         return operators.lt(a,b)
         raise NotImplementedError("Need to implement for Task 1.2")
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
         # TODO: Implement for Task 1.4.
+        saved = ctx.saved_tensors
+        return 0.0, 0.0
         raise NotImplementedError("Need to implement for Task 1.4")
 
 
@@ -217,11 +229,13 @@ class EQ(ScalarFunction):
     @staticmethod
     def forward(ctx: Context, a: float, b: float) -> float:
         # TODO: Implement for Task 1.2.
-        ctx.save_for_backward([a,b])
+        ctx.save_for_backward(a,b)
         return operators.eq(a,b)
         raise NotImplementedError("Need to implement for Task 1.2")
 
     @staticmethod
     def backward(ctx: Context, d_output: float) -> Tuple[float, float]:
         # TODO: Implement for Task 1.4.
+        saved = ctx.saved_tensors
+        return 0.0, 0.0 
         raise NotImplementedError("Need to implement for Task 1.4")
