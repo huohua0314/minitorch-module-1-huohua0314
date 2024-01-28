@@ -23,6 +23,22 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
         An approximation of $f'_i(x_0, \ldots, x_{n-1})$
     """
     # TODO: Implement for Task 1.1.
+    if arg  < 0 or arg > len(vals) :
+        raise ValueError("Invalid Index")
+    
+    val_list = list(vals)
+    val_list[arg] += epsilon
+    
+    forward = f(*tuple(val_list))
+    
+
+    val_list[arg] -= 2 * epsilon
+    backword = f(*tuple(val_list))
+
+
+    ret = (forward - backword ) / (2 * epsilon)
+
+    return ret
     raise NotImplementedError("Need to implement for Task 1.1")
 
 
