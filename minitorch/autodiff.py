@@ -134,10 +134,7 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
         z = x.chain_rule(my_dict[x.unique_id])
         for t in z:
             if t[0].is_leaf():
-                print("***********************")
-                print("accumulate")
-                print(t[1])
-                print("***********************")
+               
                 t[0].accumulate_derivative(t[1])
             else:
                 my_dict[t[0].unique_id] += t[1]
